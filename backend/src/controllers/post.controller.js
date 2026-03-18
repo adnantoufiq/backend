@@ -3,17 +3,14 @@ const User = require('../models/user.model');
 const { sendPushNotification } = require('../config/firebase');
 const { successResponse, errorResponse } = require('../utils/response.utils');
 
-// ── Helper: populate post fields ──────────────────────────────────────────────
+// populate post fields 
 const populatePost = (query) =>
   query
     .populate('author', 'username')
     .populate('comments.user', 'username');
 
-// ── Create Post ───────────────────────────────────────────────────────────────
-/**
- * POST /api/posts
- * Create a new text-only post
- */
+// Create Post 
+
 const createPost = async (req, res, next) => {
   try {
     const { content } = req.body;
@@ -31,11 +28,8 @@ const createPost = async (req, res, next) => {
   }
 };
 
-// ── Get All Posts (paginated) ─────────────────────────────────────────────────
-/**
- * GET /api/posts?page=1&limit=10&username=john
- * Retrieve all posts, newest first, with optional username filter
- */
+// Get All Posts (paginated) 
+
 const getPosts = async (req, res, next) => {
   try {
     const page = Math.max(1, parseInt(req.query.page) || 1);
@@ -95,11 +89,8 @@ const getPosts = async (req, res, next) => {
   }
 };
 
-// ── Like / Unlike Post ────────────────────────────────────────────────────────
-/**
- * POST /api/posts/:id/like
- * Toggle like on a post; notifies post author via FCM
- */
+// Like / Unlike Post
+
 const likePost = async (req, res, next) => {
   try {
     const post = await Post.findById(req.params.id).populate('author', 'username fcmToken');
@@ -143,11 +134,8 @@ const likePost = async (req, res, next) => {
   }
 };
 
-// ── Add Comment ───────────────────────────────────────────────────────────────
-/**
- * POST /api/posts/:id/comment
- * Add a comment to a post; notifies post author via FCM
- */
+//  Add Comment 
+
 const addComment = async (req, res, next) => {
   try {
     const { text } = req.body;

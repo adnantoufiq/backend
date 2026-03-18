@@ -1,0 +1,133 @@
+### Mini Social Feed API Test Collection
+### Run these requests in order.
+### Requires VS Code REST Client extension.
+
+@baseUrl = http://localhost:5000
+
+@username = user_toufiq
+@email = {{username}}@example.com
+@password = password123
+@fcmToken = fake-fcm-token
+
+### 1) Health Check
+GET {{baseUrl}}/health
+
+
+
+### 2) Signup (creates a fresh user each run)
+# @name signup
+POST {{baseUrl}}/api/auth/signup
+Content-Type: application/json
+
+{
+	"username": "{{username}}",
+	"email": "{{email}}",
+	"password": "{{password}}"
+}
+
+
+
+### Capture auth token from signup response
+@token = {{signup.response.body.data.token}}
+
+### 3) Login (same user)
+# @name login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+	"email": "{{email}}",
+	"password": "{{password}}"
+}
+
+
+
+### Optional: replace token with login token
+@token = {{login.response.body.data.token}}
+
+
+### 4) Get current user profile
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{token}}
+
+
+### 5) Update FCM token
+PUT {{baseUrl}}/api/auth/fcm-token
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+	"fcmToken": "{{fcmToken}}"
+}
+
+
+
+### 6) Create post
+# @name createPost
+POST {{baseUrl}}/api/posts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+	"content": "Hello I am from  {{username}}_3!"
+}
+
+
+
+### Capture new post id
+@postId = {{createPost.response.body.data.post._id}}
+
+
+
+### 7) Get posts (default pagination)
+GET {{baseUrl}}/api/posts
+Authorization: Bearer {{token}}
+
+
+
+### 8) Get posts (with pagination)
+GET {{baseUrl}}/api/posts?page=1&limit=5
+Authorization: Bearer {{token}}
+
+
+
+### 9) Get posts filtered by username
+GET {{baseUrl}}/api/posts?username=user_toufiq
+Authorization: Bearer {{token}}
+
+
+
+### 10) Like/unlike a post (toggle)
+POST {{baseUrl}}/api/posts/69ba32f1364d4f35d2002a14/like
+Authorization: Bearer {{token}}
+
+
+
+### 11) Add comment to a post
+POST {{baseUrl}}/api/posts/{{postId}}/comment
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+	"text": "Great post! Tested via REST client."
+}
+
+### 12) Negative test: Unauthorized profile request
+GET {{baseUrl}}/api/auth/me
+
+
+
+### 13) Negative test: Validation error on create post
+POST {{baseUrl}}/api/posts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+	"content": ""
+}
+
+
+
+### 14) Negative test: Like invalid/nonexistent post id
+POST {{baseUrl}}/api/posts/000000000000000000000000/like
+Authorization: Bearer {{token}}

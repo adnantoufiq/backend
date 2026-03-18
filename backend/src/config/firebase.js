@@ -50,7 +50,7 @@ const sendPushNotification = async ({ fcmToken, title, body, data = {} }) => {
     const message = {
       token: fcmToken,
       notification: { title, body },
-      data: { ...data, click_action: 'FLUTTER_NOTIFICATION_CLICK' },
+      data: { ...data, clickAction: 'OPEN_FEED' },
       android: {
         priority: 'high',
         notification: { sound: 'default', channelId: 'default' },
@@ -64,6 +64,10 @@ const sendPushNotification = async ({ fcmToken, title, body, data = {} }) => {
     console.log(`✅ FCM notification sent: ${response}`);
     return response;
   } catch (error) {
+    if (error.code === 'messaging/registration-token-not-registered') {
+      console.warn('⚠️  Invalid or expired FCM token. Consider clearing it from the user profile.');
+      return null;
+    }
     console.error('❌ FCM send error:', error.message);
     return null;
   }

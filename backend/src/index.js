@@ -1,8 +1,12 @@
 require('dotenv').config();
 const app = require('./app');
 const connectDB = require('./config/database');
+const { initializeFirebase } = require('./config/firebase');
 
 const PORT = process.env.PORT || 5000;
+
+// Initialize Firebase Admin SDK (safe no-op when env vars are missing)
+initializeFirebase();
 
 // Connect to MongoDB then start server
 connectDB()
