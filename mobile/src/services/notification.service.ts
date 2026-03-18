@@ -14,7 +14,7 @@ Notifications.setNotificationHandler({
 export const notificationService = {
   /**
    * Request permission and register for push notifications.
-   * Returns the Expo push token (or FCM token on Android).
+  * Returns a device push token (FCM on Android).
    */
   registerForPushNotifications: async (): Promise<string | null> => {
     // Check/request permissions
@@ -43,15 +43,23 @@ export const notificationService = {
     }
 
     try {
-      // Get device push token (Expo push token)
-      const tokenData = await Notifications.getExpoPushTokenAsync({
-        projectId: 'your-eas-project-id', // Replace with your EAS project ID
-      });
-      const token = tokenData.data;
-      console.log('📱 Push token:', token);
+      // For Firebase Admin send(), we need a native device token.
+      const tokenData = await Notifications.getDevicePushTokenAsync();
+      const token = typeof tokenData.data === 'string' ? tokenData.data : null;
+
+      if (!token) {
+        console.warn('⚠️ Unsupported push token format for Firebase flow');
+        return null;
+      }
+
+      if (Platform.OS !== 'android') {
+        console.warn('⚠️ Current backend Firebase flow is configured primarily for Android FCM tokens');
+      }
+
+      console.log('📱 Device push token acquired');
       return token;
     } catch (error) {
-      console.error('❌ Failed to get push token:', error);
+      console.error('❌ Failed to get device push token:', error);
       return null;
     }
   },
