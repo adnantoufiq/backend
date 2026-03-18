@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.pid.lock
+*.seed
+
+# Build and coverage output
+dist/
+build/
+coverage/
+.tmp/
+tmp/
+.cache/
+
+# Frontend framework output (if present)
+.next/
+out/
+.nuxt/
+.svelte-kit/
+.vite/
+.vercel/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Testing artifacts
+.nyc_output/
+
+# Database and local storage files
+*.sqlite
+*.sqlite3
+*.db
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Optional package manager artifacts
+.pnpm-store/
+.yarn/
+
+# Misc
+*.swp
