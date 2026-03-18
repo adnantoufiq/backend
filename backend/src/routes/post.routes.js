@@ -6,7 +6,7 @@ const { validate } = require('../middleware/validate.middleware');
 
 const router = express.Router();
 
-// ── Create Post ───────────────────────────────────────────────────────────────
+//  Create Post
 router.post(
   '/',
   authenticate,
@@ -20,7 +20,7 @@ router.post(
   createPost
 );
 
-// ── Get All Posts (paginated, optional username filter) ───────────────────────
+// Get All Posts (paginated, optional username filter)
 router.get(
   '/',
   authenticate,
@@ -40,10 +40,10 @@ router.get(
   getPosts
 );
 
-// ── Like / Unlike a Post ──────────────────────────────────────────────────────
+//  Like / Unlike a Post 
 router.post('/:id/like', authenticate, likePost);
 
-// ── Add Comment ───────────────────────────────────────────────────────────────
+//  Add Comment
 router.post(
   '/:id/comment',
   authenticate,
