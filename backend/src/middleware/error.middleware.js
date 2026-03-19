@@ -9,7 +9,7 @@ const notFound = (req, res, next) => {
 
 // Global error handler
 const errorHandler = (err, req, res, next) => {
-  console.error('❌ Error:', err.message);
+  console.error('Error:', err.message);
 
   // Mongoose validation error
   if (err.name === 'ValidationError') {

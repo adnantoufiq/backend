@@ -9,7 +9,7 @@ const initializeFirebase = () => {
   const privateKey = process.env.FIREBASE_PRIVATE_KEY;
 
   if (!projectId || !clientEmail || !privateKey) {
-    console.warn('⚠️  Firebase credentials not configured. Push notifications will be disabled.');
+    console.warn('Firebase credentials not configured. Push notifications will be disabled.');
     return false;
   }
 
@@ -25,9 +25,9 @@ const initializeFirebase = () => {
         }),
       });
       firebaseInitialized = true;
-      console.log('✅ Firebase Admin SDK initialized');
+      console.log('Firebase Admin SDK initialized');
     } catch (error) {
-      console.error('❌ Firebase initialization error:', error.message);
+      console.error('Firebase initialization error:', error.message);
       return false;
     }
   }
@@ -37,12 +37,12 @@ const initializeFirebase = () => {
 
 const sendPushNotification = async ({ fcmToken, title, body, data = {} }) => {
   if (!firebaseInitialized) {
-    console.log(`📵 [FCM Skipped] ${title}: ${body}`);
+    console.log(`[FCM Skipped] ${title}: ${body}`);
     return { ok: false, skipped: true, reason: 'not-initialized' };
   }
 
   if (!fcmToken) {
-    console.log('📵 No FCM token for this user, skipping notification');
+    console.log('No FCM token for this user, skipping notification');
     return { ok: false, skipped: true, reason: 'missing-token' };
   }
 
@@ -61,7 +61,7 @@ const sendPushNotification = async ({ fcmToken, title, body, data = {} }) => {
     };
 
     const response = await admin.messaging().send(message);
-    console.log(`✅ FCM notification sent: ${response}`);
+    console.log(`FCM notification sent: ${response}`);
     return { ok: true, messageId: response };
   } catch (error) {
     const normalizedMessage = String(error.message || '').toLowerCase();
@@ -70,7 +70,7 @@ const sendPushNotification = async ({ fcmToken, title, body, data = {} }) => {
       error.code === 'messaging/registration-token-not-registered' ||
       error.code === 'messaging/invalid-registration-token'
     ) {
-      console.warn('⚠️ Invalid or expired FCM token. Clearing token is recommended.');
+      console.warn('Invalid or expired FCM token. Clearing token is recommended.');
       return { ok: false, reason: 'invalid-token', code: error.code, message: error.message };
     }
 
@@ -78,11 +78,11 @@ const sendPushNotification = async ({ fcmToken, title, body, data = {} }) => {
       error.code === 'messaging/mismatched-credential' ||
       normalizedMessage.includes('senderid mismatch')
     ) {
-      console.warn('⚠️ Sender ID mismatch for FCM token. Clearing token is recommended.');
+      console.warn('Sender ID mismatch for FCM token. Clearing token is recommended.');
       return { ok: false, reason: 'sender-id-mismatch', code: error.code, message: error.message };
     }
 
-    console.error('❌ FCM send error:', error.message);
+    console.error('FCM send error:', error.message);
     return { ok: false, reason: 'unknown-error', code: error.code, message: error.message };
   }
 };

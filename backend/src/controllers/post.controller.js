@@ -8,7 +8,7 @@ const clearInvalidAuthorTokenIfNeeded = async (authorId, result) => {
 
   if (result.reason === 'invalid-token' || result.reason === 'sender-id-mismatch') {
     await User.findByIdAndUpdate(authorId, { fcmToken: null });
-    console.log(`🧹 Cleared stale FCM token for user ${authorId}`);
+    console.log(`Cleared stale FCM token for user ${authorId}`);
   }
 };
 
@@ -127,7 +127,7 @@ const likePost = async (req, res, next) => {
       if (post.author._id.toString() !== userId.toString() && post.author.fcmToken) {
         const notificationResult = await sendPushNotification({
           fcmToken: post.author.fcmToken,
-          title: '❤️ New Like',
+          title: 'New Like',
           body: `${req.user.username} liked your post`,
           data: { postId: post._id.toString(), type: 'like' },
         });
@@ -171,7 +171,7 @@ const addComment = async (req, res, next) => {
     if (post.author._id.toString() !== req.user._id.toString() && post.author.fcmToken) {
       const notificationResult = await sendPushNotification({
         fcmToken: post.author.fcmToken,
-        title: '💬 New Comment',
+        title: 'New Comment',
         body: `${req.user.username} commented: "${text.substring(0, 50)}${text.length > 50 ? '...' : ''}"`,
         data: { postId: post._id.toString(), type: 'comment' },
       });
