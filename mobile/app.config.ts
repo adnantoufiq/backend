@@ -69,7 +69,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     scheme: 'minisocialfeed',
     extra: {
       API_BASE_URL: process.env.API_BASE_URL || 'http://192.168.0.110:5000/api',
-      eas: { projectId: 'ba26979c-1a1b-4317-8591-6e22f9083793' },
+      eas: { projectId: process.env.EXPO_PUBLIC_EAS_PROJECT_ID || 'ba26979c-1a1b-4317-8591-6e22f9083793' },
     },
   };
 };
