@@ -423,15 +423,15 @@ The APK download link will appear in the terminal and at [expo.dev](https://expo
 
 ### Public Backend URL
 
-- Backend URL: `<ADD_PUBLIC_BACKEND_URL_HERE>`
+- Backend URL: `https://backend-production-4a8f.up.railway.app`
 
 ### Android APK (Google Drive)
 
-- APK Download URL: `<ADD_GOOGLE_DRIVE_APK_LINK_HERE>`
+- APK Download URL: `https://expo.dev/artifacts/eas/oxkx9DiVhQDuQWZUdm8he.apk`
 
 ### Build Reference (Expo)
 
-- EAS Build URL: `<ADD_EAS_BUILD_LINK_HERE>`
+- EAS Build URL: `https://expo.dev/accounts/toufiq1234/projects/mini-social-feed/builds/0325acca-0123-4c6a-80b9-35d4e0bb0349`
 
 ---
 
