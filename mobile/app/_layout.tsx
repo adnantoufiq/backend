@@ -42,7 +42,7 @@ function NotificationSetup() {
 
     // Listen for notifications while app is open
     const sub = notificationService.addNotificationReceivedListener((notification) => {
-      console.log('📬 Notification received:', notification.request.content);
+      console.log('Notification received:', notification.request.content);
     });
 
     return () => sub.remove();

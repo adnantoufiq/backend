@@ -27,7 +27,7 @@ export const notificationService = {
     }
 
     if (finalStatus !== 'granted') {
-      console.log('📵 Push notification permission denied');
+      console.log('Push notification permission denied');
       return null;
     }
 
@@ -48,18 +48,18 @@ export const notificationService = {
       const token = typeof tokenData.data === 'string' ? tokenData.data : null;
 
       if (!token) {
-        console.warn('⚠️ Unsupported push token format for Firebase flow');
+        console.warn('Unsupported push token format for Firebase flow');
         return null;
       }
 
       if (Platform.OS !== 'android') {
-        console.warn('⚠️ Current backend Firebase flow is configured primarily for Android FCM tokens');
+        console.warn('Current backend Firebase flow is configured primarily for Android FCM tokens');
       }
 
-      console.log('📱 Device push token acquired');
+      console.log('Device push token acquired');
       return token;
     } catch (error) {
-      console.error('❌ Failed to get device push token:', error);
+      console.error('Failed to get device push token:', error);
       return null;
     }
   },
@@ -72,10 +72,10 @@ export const notificationService = {
       const token = await notificationService.registerForPushNotifications();
       if (token) {
         await authService.updateFcmToken(token);
-        console.log('✅ FCM token synced with backend');
+        console.log('FCM token synced with backend');
       }
     } catch (error) {
-      console.error('❌ Failed to sync FCM token:', error);
+      console.error('Failed to sync FCM token:', error);
     }
   },
 
