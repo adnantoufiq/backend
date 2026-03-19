@@ -62,9 +62,32 @@ Server starts at `http://localhost:5000`.
 
 ---
 
+## 🌐 Public Backend Deployment (Required for Manager Testing)
+
+Deploy `backend/` to a public host such as Render, Railway, or Fly.io.
+
+### Render Example
+
+1. Create a new **Web Service** from this repository.
+2. Set **Root Directory** to `backend`.
+3. Build command: `npm install`
+4. Start command: `npm start`
+5. Add all backend environment variables from `backend/.env.example`.
+6. Deploy and copy the public URL.
+
+Example public API base URL:
+
+```text
+https://your-service-name.onrender.com/api
+```
+
+Use this public API URL in mobile build env (`API_BASE_URL`) before generating the manager APK.
+
+---
+
 ## 📡 API Documentation
 
-**Base URL:** `http://localhost:5000/api`
+**Base URL:** `http://localhost:5000/api` (local) or `https://<your-public-backend>/api` (production)
 
 All protected routes require the header:
 ```
@@ -280,15 +303,22 @@ npm install
 
 ### Configuration
 
-1. **API URL** — In `app.config.ts`, update the `API_BASE_URL`:
-   - Android emulator talking to local backend: `http://10.0.2.2:5000/api`
-   - iOS simulator: `http://localhost:5000/api`
-   - Physical device: use your machine's LAN IP, e.g. `http://192.168.1.100:5000/api`
+1. **API URL** — Create a local env file from template:
+
+  ```bash
+  cp .env.example .env
+  ```
+
+  Then set `API_BASE_URL` in `mobile/.env`:
+  - Local Android emulator: `http://10.0.2.2:5000/api`
+  - Local physical device: `http://<your-lan-ip>:5000/api`
+  - Production/reviewer build: `https://<your-public-backend>/api`
 
 2. **Firebase / Push Notifications:**
    - Create a Firebase project at [console.firebase.google.com](https://console.firebase.google.com)
-   - Add an Android app → download `google-services.json` → place it in `mobile/`
-   - Update `projectId` in `app.config.ts` and `notification.service.ts` with your EAS project ID
+  - Add an Android app with package name `com.minisocialfeed.app`
+  - Download `google-services.json` and place it in `mobile/`
+  - Add Firebase Admin service account values in `backend/.env`
 
 3. **EAS Project ID** — Run `eas init` in the `mobile/` folder to generate a project ID and update `app.config.ts`.
 
@@ -313,6 +343,9 @@ npm install -g eas-cli
 
 # Login to Expo
 eas login
+
+# Set production API URL for cloud build
+eas secret:create --scope project --name API_BASE_URL --value https://<your-public-backend>/api
 
 # Build preview APK for Android
 eas build -p android --profile preview
@@ -379,3 +412,61 @@ The APK download link will appear in the terminal and at [expo.dev](https://expo
 | HTTP Client | Axios |
 | Local Storage | AsyncStorage |
 | Notifications | expo-notifications |
+
+---
+
+## 📦 Submission Details
+
+### GitHub Repository
+
+- Repository URL: `https://github.com/adnantoufiq/backend.git`
+
+### Public Backend URL
+
+- Backend URL: `<ADD_PUBLIC_BACKEND_URL_HERE>`
+
+### Android APK (Google Drive)
+
+- APK Download URL: `<ADD_GOOGLE_DRIVE_APK_LINK_HERE>`
+
+### Build Reference (Expo)
+
+- EAS Build URL: `<ADD_EAS_BUILD_LINK_HERE>`
+
+---
+
+## ✅ Push Notification Test Evidence
+
+Use this scenario to verify real-time notifications:
+
+1. Login as **User A** on Android app (APK build)
+2. Ensure `fcmToken` is saved for User A in database
+3. Login as **User B** (phone or API client)
+4. User B likes/comments on User A post
+5. User A receives push notification in real time
+
+Expected backend behavior:
+
+1. `PUT /api/auth/fcm-token` is called after login
+2. `POST /api/posts/:id/like` or `POST /api/posts/:id/comment` triggers FCM send
+3. Backend logs successful push send from Firebase Admin SDK
+
+---
+
+## 📌 Notes for Reviewers
+
+1. For direct FCM testing, use the generated APK/dev build (not Expo Go).
+2. Ensure backend and mobile use the same Firebase project.
+3. If backend port `5000` is busy, server may auto-shift to next port.
+4. For final review build, API points to public backend via EAS env `API_BASE_URL`.
+
+---
+
+## 🧪 Manager Quick Test Runbook
+
+1. Install the shared APK on Android device.
+2. Sign up two users (or use two existing users).
+3. User A creates a post.
+4. User B likes/comments on User A post.
+5. Verify User A receives a push notification.
+6. Verify feed refresh, profile stats, and logout/login persistence.
