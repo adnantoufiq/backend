@@ -2,7 +2,7 @@
 ### Run these requests in order.
 ### Requires VS Code REST Client extension.
 
-@baseUrl = http://localhost:5000
+@baseUrl = https://backend-production-4a8f.up.railway.app
 
 @username = test
 @email = {{username}}@example.com
@@ -69,7 +69,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-	"content": "Hello I am from  {{username}}_3!"
+	"content": "Hello I am from  {{username}}"
 }
 
 
@@ -98,18 +98,18 @@ Authorization: Bearer {{token}}
 
 
 ### 10) Like/unlike a post (toggle)
-POST {{baseUrl}}/api/posts/69bbf2db849e360e839f6cb9/like
+POST {{baseUrl}}/api/posts/69bc4551fb298b7eec3fb8c3/like
 Authorization: Bearer {{token}}
 
 
 
 ### 11) Add comment to a post
-POST {{baseUrl}}/api/posts/69bbf2db849e360e839f6cb9/comment
+POST {{baseUrl}}/api/posts/69bc4551fb298b7eec3fb8c3/comment
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-	"text": "Great post! Tested via REST client."
+	"text": "Great post! Tested via client."
 }
 
 ### 12) Negative test: Unauthorized profile request
