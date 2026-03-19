@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { ExpoConfig, ConfigContext } from 'expo/config';
 import fs from 'fs';
 import path from 'path';
@@ -10,6 +11,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   const adaptiveIconPath = './assets/adaptive-icon.png';
   const notificationIconPath = './assets/notification-icon.png';
   const googleServicesPath = './google-services.json';
+  const apiBaseUrl =
+    process.env.API_BASE_URL ||
+    process.env.EXPO_PUBLIC_API_BASE_URL ||
+    'http://10.0.2.2:5000/api';
 
   return {
     ...config,
@@ -68,7 +73,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ],
     scheme: 'minisocialfeed',
     extra: {
-      API_BASE_URL: process.env.API_BASE_URL || 'http://192.168.0.110:5000/api',
+      API_BASE_URL: apiBaseUrl,
       eas: { projectId: process.env.EXPO_PUBLIC_EAS_PROJECT_ID || 'ba26979c-1a1b-4317-8591-6e22f9083793' },
     },
   };
