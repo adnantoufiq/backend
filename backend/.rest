@@ -4,7 +4,7 @@
 
 @baseUrl = http://localhost:5000
 
-@username = user_toufiq
+@username = test
 @email = {{username}}@example.com
 @password = password123
 @fcmToken = fake-fcm-token
@@ -92,19 +92,19 @@ Authorization: Bearer {{token}}
 
 
 ### 9) Get posts filtered by username
-GET {{baseUrl}}/api/posts?username=user_toufiq
+GET {{baseUrl}}/api/posts?username={{username}}
 Authorization: Bearer {{token}}
 
 
 
 ### 10) Like/unlike a post (toggle)
-POST {{baseUrl}}/api/posts/69ba32f1364d4f35d2002a14/like
+POST {{baseUrl}}/api/posts/69bbf2db849e360e839f6cb9/like
 Authorization: Bearer {{token}}
 
 
 
 ### 11) Add comment to a post
-POST {{baseUrl}}/api/posts/{{postId}}/comment
+POST {{baseUrl}}/api/posts/69bbf2db849e360e839f6cb9/comment
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
