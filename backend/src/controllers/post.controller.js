@@ -3,6 +3,15 @@ const User = require('../models/user.model');
 const { sendPushNotification } = require('../config/firebase');
 const { successResponse, errorResponse } = require('../utils/response.utils');
 
+const clearInvalidAuthorTokenIfNeeded = async (authorId, result) => {
+  if (!result || result.ok || result.skipped) return;
+
+  if (result.reason === 'invalid-token' || result.reason === 'sender-id-mismatch') {
+    await User.findByIdAndUpdate(authorId, { fcmToken: null });
+    console.log(`🧹 Cleared stale FCM token for user ${authorId}`);
+  }
+};
+
 // populate post fields 
 const populatePost = (query) =>
   query
@@ -116,12 +125,14 @@ const likePost = async (req, res, next) => {
 
       // Send FCM notification to post author (skip self-likes)
       if (post.author._id.toString() !== userId.toString() && post.author.fcmToken) {
-        await sendPushNotification({
+        const notificationResult = await sendPushNotification({
           fcmToken: post.author.fcmToken,
           title: '❤️ New Like',
           body: `${req.user.username} liked your post`,
           data: { postId: post._id.toString(), type: 'like' },
         });
+
+        await clearInvalidAuthorTokenIfNeeded(post.author._id, notificationResult);
       }
 
       return successResponse(res, {
@@ -158,12 +169,14 @@ const addComment = async (req, res, next) => {
 
     // Send FCM notification to post author (skip self-comments)
     if (post.author._id.toString() !== req.user._id.toString() && post.author.fcmToken) {
-      await sendPushNotification({
+      const notificationResult = await sendPushNotification({
         fcmToken: post.author.fcmToken,
         title: '💬 New Comment',
         body: `${req.user.username} commented: "${text.substring(0, 50)}${text.length > 50 ? '...' : ''}"`,
         data: { postId: post._id.toString(), type: 'comment' },
       });
+
+      await clearInvalidAuthorTokenIfNeeded(post.author._id, notificationResult);
     }
 
     return successResponse(res, {

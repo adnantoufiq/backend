@@ -38,12 +38,12 @@ const initializeFirebase = () => {
 const sendPushNotification = async ({ fcmToken, title, body, data = {} }) => {
   if (!firebaseInitialized) {
     console.log(`📵 [FCM Skipped] ${title}: ${body}`);
-    return null;
+    return { ok: false, skipped: true, reason: 'not-initialized' };
   }
 
   if (!fcmToken) {
     console.log('📵 No FCM token for this user, skipping notification');
-    return null;
+    return { ok: false, skipped: true, reason: 'missing-token' };
   }
 
   try {
@@ -62,14 +62,28 @@ const sendPushNotification = async ({ fcmToken, title, body, data = {} }) => {
 
     const response = await admin.messaging().send(message);
     console.log(`✅ FCM notification sent: ${response}`);
-    return response;
+    return { ok: true, messageId: response };
   } catch (error) {
-    if (error.code === 'messaging/registration-token-not-registered') {
-      console.warn('⚠️  Invalid or expired FCM token. Consider clearing it from the user profile.');
-      return null;
+    const normalizedMessage = String(error.message || '').toLowerCase();
+
+    if (
+      error.code === 'messaging/registration-token-not-registered' ||
+      error.code === 'messaging/invalid-registration-token'
+    ) {
+      console.warn('⚠️ Invalid or expired FCM token. Clearing token is recommended.');
+      return { ok: false, reason: 'invalid-token', code: error.code, message: error.message };
     }
+
+    if (
+      error.code === 'messaging/mismatched-credential' ||
+      normalizedMessage.includes('senderid mismatch')
+    ) {
+      console.warn('⚠️ Sender ID mismatch for FCM token. Clearing token is recommended.');
+      return { ok: false, reason: 'sender-id-mismatch', code: error.code, message: error.message };
+    }
+
     console.error('❌ FCM send error:', error.message);
-    return null;
+    return { ok: false, reason: 'unknown-error', code: error.code, message: error.message };
   }
 };
 
